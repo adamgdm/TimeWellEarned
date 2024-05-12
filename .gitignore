@@ -2,3 +2,4 @@ Docker/Db/Volumes
 Docker/Db/Volumes/*
 Srcs/__pycache__
 Srcs/__pycache__/*
+Srcs/.env

@@ -8,12 +8,3 @@ services:
       - ./Docker/Db/Volumes:/var/lib/mysql
     ports:
       - "3306:3306"
-  python_app:
-    build: ./Docker/PythonCode/
-    restart: always
-    volumes:
-      - ./Srcs:/app
-    ports:
-      - "5000:5000"
-    depends_on:
-      - db
