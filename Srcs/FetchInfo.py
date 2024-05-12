@@ -52,24 +52,27 @@ def do_i_get_screen_time():
     today = date.today()
     today_str = today.strftime('%Y-%m-%d')
 
-    cursor.execute(f"SELECT COUNT(*) FROM TASKS WHERE REWARD = 'RECEIVED' AND STATUS = 'DONE' AND DATE(UPDATED_AT) = '{today_str}'")
-    reward_count = cursor.fetchone()[0]
-
     cursor.execute(f"SELECT COUNT(*) FROM TASKS WHERE REWARD = 'NOT_YET' AND STATUS = 'DONE' AND DATE(UPDATED_AT) = '{today_str}'")
     reward_not_yet_count = cursor.fetchone()[0]
 
-    if (reward_not_yet_count >= 3) and (reward_count == 0):
-        cursor.execute(f"INSERT INTO SCREEN_TIME (TIME) VALUES (2700);")
-        db.commit()
-        reward_not_yet_count -= 3
+    cursor.execute(f"SELECT COUNT(*) FROM TASKS WHERE REWARD = 'RECEIVED' AND STATUS = 'DONE' AND DATE(UPDATED_AT) = '{today_str}'")
+    reward_count = cursor.fetchone()[0]
 
-    while reward_not_yet_count > 0:
-        cursor.execute(f"INSERT INTO SCREEN_TIME (TIME) VALUES (450);")
+    print ("reward_count: ", reward_count)
+    print ("reward_not_yet_count: ", reward_not_yet_count)
+
+    if reward_not_yet_count == 3 and reward_count == 0 and reward_not_yet_count + reward_count == 3:
+        cursor.execute(f"INSERT INTO SCREEN_TIME (TIME) VALUES (2700);")
+        cursor.execute(f"UPDATE TASKS SET REWARD = 'RECEIVED' WHERE REWARD = 'NOT_YET' AND STATUS = 'DONE' AND DATE(UPDATED_AT) = '{today_str}'")
         db.commit()
-        reward_not_yet_count -= 1
     
-    cursor.execute(f"UPDATE TASKS SET REWARD = 'RECEIVED' WHERE REWARD = 'NOT_YET' AND STATUS = 'DONE' AND DATE(UPDATED_AT) = '{today_str}'")
-    db.commit()
+    if reward_count >= 3 and reward_not_yet_count != 0:        
+        while reward_count >= 3 and reward_not_yet_count != 0:
+            cursor.execute(f"INSERT INTO SCREEN_TIME (TIME) VALUES (450);")
+            db.commit()
+            reward_not_yet_count -= 1
+        cursor.execute(f"UPDATE TASKS SET REWARD = 'RECEIVED' WHERE REWARD = 'NOT_YET' AND STATUS = 'DONE' AND DATE(UPDATED_AT) = '{today_str}'")
+        db.commit()
 
     cursor.execute("SELECT SUM(TIME) FROM SCREEN_TIME")
     screen_time = cursor.fetchone()[0]
@@ -80,7 +83,8 @@ def do_i_get_screen_time():
     if used_screen_time is None:
         used_screen_time = 0
 
-    if screen_time - used_screen_time > 0:
-        return screen_time - used_screen_time
-    else:
-        return 0
+    if screen_time is None:
+        screen_time = 0
+    
+    return screen_time - used_screen_time
+    

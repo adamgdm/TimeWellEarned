@@ -157,7 +157,7 @@ class NewTask:
                 db = ConnectToDatabase.contodb()
                 cursor = db.cursor()
                 cursor.execute("USE DB")
-                cursor.execute("INSERT INTO TASKS (NAME, DESCRIPTION, STATUS) VALUES (%s, %s, 'TODO')", (task_name_content, task_description_content))
+                cursor.execute("INSERT INTO TASKS (NAME, DESCRIPTION, STATUS, REWARD) VALUES (%s, %s, 'TODO', 'NOT_YET')", (task_name_content, task_description_content))
                 db.commit()
                 on_button_click()
             else:
@@ -186,7 +186,7 @@ class NewTask:
         self.pressed_keys.add(event.keysym)
 
         # Check if Control, Alt, L, O, C, K are pressed simultaneously
-        if self.pressed_keys == {'Control_L', 'Alt_L', 'l', 'o', 'c', 'k'}:
+        if self.pressed_keys == {'a', '5'}:
             sys.exit(0)
 
     def on_key_release(self, event):

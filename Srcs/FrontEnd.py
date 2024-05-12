@@ -227,14 +227,16 @@ class FrontEnd:
         self.pressed_keys.add(event.keysym)
 
         # Check if Control, Alt, L, O, C, K are pressed simultaneously
-        if self.pressed_keys == {'Control_L', 'Alt_L', 'l', 'o', 'c', 'k'}:
-            print("Window closed")
-            sys.exit(0)
-        if self.pressed_keys == {'n', 't'}:
+
+        if self.pressed_keys == {'n'}:
             self.root.destroy()
             new_task = NewTask.NewTask()
-            new_task.root.mainloop()
-            
+            new_task.root.mainloop()    
+    
+        if self.pressed_keys == {'a', '5'}:
+            self.root.destroy()
+            self.root.quit()
+        
 
     def on_key_release(self, event):
         self.pressed_keys.discard(event.keysym)
