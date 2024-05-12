@@ -3,3 +3,5 @@ Docker/Db/Volumes/*
 Srcs/__pycache__
 Srcs/__pycache__/*
 Srcs/.env
+Srcs/python-3.9.7-amd64.exe
+pid.txt
